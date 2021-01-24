@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  db:
+    image: isgenez/mysql57
+    environment:
+      - MYSQL_DB: realworld
+      - MYSQL_USER: root
+      - MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    networks:
+      - rw_db 
+
+  backend:
+    image: isgenez/realworld-be
+    build:
+      - context: ./backend/
+      - dockerfile: backend/Dockerfile
+    environment:
+      - DEBUG=1
+    depends_on:
+      - db
+    networks:
+      - rw_svc 
+    ports:
+      - 8080:8080
+    links:
+      - db:mysql
+
+  frontend:
+    image: isgenez/realworld-fe
+    depends_on:
+      - backend
+    environment:
+      - DEBUG=1
+    ports:
+      - 3000:3000
+    networks:
+      - rw_svc
+    links:
+      - backend:realworld-be
+
+networks:
+  rw_db:
+    external:
+      name: rw_db
+      config:
+        - subnet: 172.20.0.0/24
+  rw_svc:
+    external:
+      name: rw_svc
+      config:
+        - subnet: 172.30.0.0/24
