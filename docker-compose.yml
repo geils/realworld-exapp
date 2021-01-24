@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DB: realworld
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - custom: 
+          ipv4_address: 172.20.0.100
+
+  backend:
+    image: kotlin-spring-realworld:kkocote
+    networks:
+      - custom:
+          ipv4_address: 172.20.0.101
+    volumes:
+      - ksapp:/src
+    ports:
+      - 8080:8080
+
+  frontend:
+    image: react-mobx:kko
+    depends_on:
+      - backend
+    volumes:
+      - react-mobx:/usr/src/app/
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    networks:
+      - custom:
+          ipv4_address: 172.20.0.102
+
+networks:
+  custom:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.20.0.0/24
+volumes:
+  app:
+  react-mobx:
