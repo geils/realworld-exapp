@@ -12,8 +12,8 @@ services:
     networks:
       - rw_db 
 
-  backend:
-    image: isgenez/realworld-be
+  realworld-be:
+    image: isgenez/backend
     build:
       - context: ./backend/
       - dockerfile: backend/Dockerfile
@@ -28,10 +28,10 @@ services:
     links:
       - db:mysql
 
-  frontend:
-    image: isgenez/realworld-fe
+  realworld-fe:
+    image: isgenez/frontend
     depends_on:
-      - backend
+      - realworld-be
     environment:
       - DEBUG=1
     ports:
@@ -39,7 +39,7 @@ services:
     networks:
       - rw_svc
     links:
-      - backend:realworld-be
+      - realworld-be:realworld-be
 
 networks:
   rw_db:
