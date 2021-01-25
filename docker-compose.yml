@@ -4,24 +4,22 @@ services:
   db:
     image: isgenez/mysql57
     environment:
-      - MYSQL_DB: realworld
-      - MYSQL_USER: root
-      - MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: "root"
     ports:
       - 3306:3306
     networks:
-      - rw_db 
+      - dbnet
 
   realworld-be:
     image: isgenez/backend
     depends_on:
       - db
-    networks:
-      - rw_svc 
     ports:
       - 8080:8080
     links:
       - db:mysql
+    networks:
+      - appnet
 
   realworld-fe:
     image: isgenez/frontend
@@ -29,19 +27,21 @@ services:
       - realworld-be
     ports:
       - 3000:3000
-    networks:
-      - rw_svc
     links:
-      - backend:realworld-be
+      - realworld-be:realworld-be
+    networks:
+      - appnet
 
 networks:
-  rw_db:
-    external:
-      name: rw_db
+  appnet:
+    driver: bridge
+    ipam:
+      driver: default
       config:
-        - subnet: 172.20.0.0/24
-  rw_svc:
-    external:
-      name: rw_svc
+        - subnet: 172.30.0.1/16
+  dbnet:
+    driver: bridge
+    ipam:
+      driver: default
       config:
-        - subnet: 172.30.0.0/24
+        - subnet: 172.20.0.1/16
