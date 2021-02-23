@@ -5,7 +5,7 @@ import authStore from './stores/authStore';
 
 const superagent = superagentPromise(_superagent, global.Promise);
 
-const API_ROOT = 'localhost:8080/api';
+const API_ROOT = 'http://localhost:8080/api';
 
 const encode = encodeURIComponent;
 

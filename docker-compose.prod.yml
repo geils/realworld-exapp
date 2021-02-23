@@ -20,15 +20,14 @@ services:
       - db:mysql
     networks:
       - appnet
+      - dbnet
 
   realworld-fe:
-    image: isgenez/frontend:local
+    image: isgenez/frontend
     depends_on:
       - realworld-be
     ports:
       - 3000:3000
-    links:
-      - realworld-be:realworld-be
     networks:
       - appnet
 

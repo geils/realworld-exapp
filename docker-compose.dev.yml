@@ -25,17 +25,16 @@ services:
       - db:mysql
     networks:
       - appnet
+      - dbnet
 
   realworld-fe:
-    image: isgenez/frontend:local
+    image: isgenez/frontend
     environments:
       - DEBUG=1
     depends_on:
       - realworld-be
     ports:
       - 3000:3000
-    links:
-      - realworld-be:realworld-be
     networks:
       - appnet
 
@@ -46,6 +45,7 @@ networks:
       driver: default
       config:
         - subnet: 172.30.0.1/16
+
   dbnet:
     driver: bridge
     ipam:
